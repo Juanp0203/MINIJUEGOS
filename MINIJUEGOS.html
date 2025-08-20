@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAX META SA - Mini Juegos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      text-align: center;
+      padding: 20px;
+      color: #333;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    header img {
+      height: 80px;
+      margin-right: 15px;
+    }
+    h1 {
+      color: #e63946;
+    }
+    .menu button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background: #e63946;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .menu button:hover { background: #d62828; }
+    .game {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    canvas {
+      background: #000;
+      display: block;
+      margin: 0 auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      gap: 10px;
+      justify-content: center;
+    }
+    .card {
+      width: 80px;
+      height: 80px;
+      background: #e63946;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    .card.flipped {
+      background: #fff;
+      color: #e63946;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo TAX META SA">
+    <h1>Mini Juegos - TAX META SA</h1>
+  </header>
+
+  <div class="menu">
+    <button onclick="showGame('adivina')">Adivina el número</button>
+    <button onclick="showGame('ppt')">Piedra, Papel o Tijera</button>
+    <button onclick="showGame('clic')">Juego del Clic</button>
+    <button onclick="showGame('memoria')">Memoria</button>
+    <button onclick="showGame('snake')">Snake</button>
+    <button onclick="showGame('tetris')">Tetris</button>
+    <button onclick="showGame('sudoku')">Sudoku</button>
+  </div>
+
+  <!-- Juego 1: Adivina el número -->
+  <div id="adivina" class="game">
+    <h2>Adivina el número</h2>
+    <p>Piensa en un número entre 1 y 10</p>
+    <input type="number" id="guess" min="1" max="10">
+    <button onclick="checkNumber()">Probar</button>
+    <p id="result1"></p>
+  </div>
+
+  <!-- Juego 2: Piedra, Papel o Tijera -->
+  <div id="ppt" class="game">
+    <h2>Piedra, Papel o Tijera</h2>
+    <button onclick="playRPS('piedra')">✊ Piedra</button>
+    <button onclick="playRPS('papel')">✋ Papel</button>
+    <button onclick="playRPS('tijera')">✌️ Tijera</button>
+    <p id="result2"></p>
+  </div>
+
+  <!-- Juego 3: Clic rápido -->
+  <div id="clic" class="game">
+    <h2>Juego del Clic</h2>
+    <p>Haz clic al botón tantas veces como puedas en 5 segundos</p>
+    <button id="clickBtn" onclick="countClicks()" disabled>¡Clic!</button>
+    <button onclick="startClickGame()">Iniciar</button>
+    <p id="result3"></p>
+  </div>
+
+  <!-- Juego 4: Memoria -->
+  <div id="memoria" class="game">
+    <h2>Juego de Memoria</h2>
+    <div class="grid" id="memoryGrid"></div>
+    <p id="result4"></p>
+  </div>
+
+  <!-- Juego 5: Snake -->
+  <div id="snake" class="game">
+    <h2>Snake 🐍</h2>
+    <canvas id="snakeCanvas" width="300" height="300"></canvas>
+    <p>Usa las flechas del teclado para mover</p>
+  </div>
+
+  <!-- Juego 6: Tetris -->
+  <div id="tetris" class="game">
+    <h2>Tetris</h2>
+    <canvas id="tetrisCanvas" width="240" height="400"></canvas>
+    <p>Usa las flechas ⬅️ ➡️ ⬇️ para mover, ⬆️ para rotar</p>
+  </div>
+
+  <!-- Juego 7: Sudoku -->
+  <div id="sudoku" class="game">
+    <h2>Sudoku</h2>
+    <iframe src="https://sudoku.com/es" width="100%" height="600" frameborder="0"></iframe>
+  </div>
+
+  <script>
+    // Mostrar juegos
+    function showGame(id) {
+      document.querySelectorAll('.game').forEach(div => div.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+
+    // Juego 1: Adivina el número
+    let secret = Math.floor(Math.random() * 10) + 1;
+    function checkNumber() {
+      let guess = document.getElementById("guess").value;
+      let result = document.getElementById("result1");
+      if (guess == secret) {
+        result.innerText = "🎉 ¡Correcto! El número era " + secret;
+        secret = Math.floor(Math.random() * 10) + 1;
+      } else result.innerText = "❌ Intenta otra vez";
+    }
+
+    // Juego 2: Piedra, Papel o Tijera
+    function playRPS(user) {
+      const options = ["piedra", "papel", "tijera"];
+      const pc = options[Math.floor(Math.random() * 3)];
+      let result = "";
+      if (user === pc) result = "🤝 Empate, ambos eligieron " + user;
+      else if (
+        (user === "piedra" && pc === "tijera") ||
+        (user === "papel" && pc === "piedra") ||
+        (user === "tijera" && pc === "papel")
+      ) result = "🎉 Ganaste, la PC eligió " + pc;
+      else result = "😢 Perdiste, la PC eligió " + pc;
+      document.getElementById("result2").innerText = result;
+    }
+
+    // Juego 3: Clic rápido
+    let clicks = 0;
+    function startClickGame() {
+      clicks = 0;
+      document.getElementById("result3").innerText = "";
+      document.getElementById("clickBtn").disabled = false;
+      setTimeout(() => {
+        document.getElementById("clickBtn").disabled = true;
+        document.getElementById("result3").innerText = "Hiciste " + clicks + " clics 🎯";
+      }, 5000);
+    }
+    function countClicks() { clicks++; }
+
+    // Juego 4: Memoria
+    const emojis = ["🍎","🍌","🍒","🍇","🍉","🍋","🥝","🍑"];
+    let cards = [...emojis, ...emojis];
+    let firstCard, secondCard, lock = false, matches = 0;
+    function startMemory() {
+      matches = 0;
+      const grid = document.getElementById("memoryGrid");
+      grid.innerHTML = "";
+      cards.sort(() => 0.5 - Math.random());
+      cards.forEach((emoji,i) => {
+        const div = document.createElement("div");
+        div.classList.add("card");
+        div.dataset.emoji = emoji;
+        div.innerText = "?";
+        div.onclick = () => flipCard(div);
+        grid.appendChild(div);
+      });
+    }
+    function flipCard(card) {
+      if (lock || card.classList.contains("flipped")) return;
+      card.innerText = card.dataset.emoji;
+      card.classList.add("flipped");
+      if (!firstCard) { firstCard = card; return; }
+      secondCard = card;
+      lock = true;
+      if (firstCard.dataset.emoji === secondCard.dataset.emoji) {
+        matches++;
+        lock = false;
+        firstCard = null; secondCard = null;
+        if (matches === emojis.length)
+          document.getElementById("result4").innerText = "🎉 ¡Ganaste!";
+      } else {
+        setTimeout(() => {
+          firstCard.innerText = "?";
+          secondCard.innerText = "?";
+          firstCard.classList.remove("flipped");
+          secondCard.classList.remove("flipped");
+          firstCard = null; secondCard = null;
+          lock = false;
+        }, 800);
+      }
+    }
+    document.getElementById("memoria").addEventListener("click", startMemory, {once:true});
+
+    // Juego 5: Snake
+    const snakeCanvas = document.getElementById("snakeCanvas");
+    const ctx = snakeCanvas.getContext("2d");
+    let box = 10, snake = [{x:150,y:150}], direction, food = {x:50,y:50};
+    document.addEventListener("keydown",e=>{
+      if(e.key==="ArrowUp" && direction!=="down") direction="up";
+      if(e.key==="ArrowDown"&& direction!=="up") direction="down";
+      if(e.key==="ArrowLeft"&& direction!=="right") direction="left";
+      if(e.key==="ArrowRight"&& direction!=="left") direction="right";
+    });
+    function drawSnake(){
+      ctx.clearRect(0,0,300,300);
+      snake.forEach(s=>{ctx.fillStyle="lime";ctx.fillRect(s.x,s.y,box,box);});
+      ctx.fillStyle="red";ctx.fillRect(food.x,food.y,box,box);
+      let head={...snake[0]};
+      if(direction==="up") head.y-=box;
+      if(direction==="down") head.y+=box;
+      if(direction==="left") head.x-=box;
+      if(direction==="right") head.x+=box;
+      if(head.x===food.x && head.y===food.y){
+        food={x:Math.floor(Math.random()*30)*10,y:Math.floor(Math.random()*30)*10};
+      } else snake.pop();
+      snake.unshift(head);
+    }
+    setInterval(drawSnake,150);
+
+    // Juego 6: Tetris (simple)
+    const tetrisCanvas = document.getElementById("tetrisCanvas");
+    const tctx = tetrisCanvas.getContext("2d");
+    tctx.fillStyle="black";tctx.fillRect(0,0,240,400);
+    tctx.fillStyle="white";tctx.font="20px Arial";tctx.fillText("Tetris básico aquí",40,200);
+    // (Para un Tetris real podemos integrar librerías externas)
+  </script>
+</body>
+</html>
