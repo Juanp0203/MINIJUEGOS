@@ -1,0 +1,7 @@
+<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Deslizador</title>
+<style>body{text-align:center;font-family:Arial}.g{display:grid;grid-template-columns:repeat(3,90px);gap:6px;width:max-content;margin:10px auto}.c{width:90px;height:90px;background:#f4f4f4;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:24px}</style></head><body><h1>Deslizador 3x3</h1><div class="g" id="g"></div><button onclick="shuffle()">Mezclar</button>
+<script>
+let arr=[]; function shuffle(){ arr=[...Array(8).keys()].map(x=>x+1).concat([0]); for(let i=arr.length-1;i>0;i--){ let j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} draw(); }
+function draw(){ const g=document.getElementById('g'); g.innerHTML=''; arr.forEach((v,i)=>{ const d=document.createElement('div'); d.className='c'; d.textContent=v||''; d.onclick=()=>{ let z=arr.indexOf(0); if([z-1,z+1,z-3,z+3].includes(i)){ [arr[z],arr[i]]=[arr[i],arr[z]]; draw(); if(arr.every((v,i)=> v===i+1 || (i===8 && v===0))) alert('Ganaste'); } }; g.appendChild(d); }); }
+shuffle();
+</script></body></html>

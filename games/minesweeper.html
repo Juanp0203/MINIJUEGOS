@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Buscaminas</title>
+<style>body{text-align:center;font-family:Arial}.g{display:grid;grid-template-columns:repeat(6,40px);gap:4px;width:max-content;margin:10px auto}.cell{width:40px;height:40px;background:#ccc;display:flex;align-items:center;justify-content:center;border-radius:4px;user-select:none}</style></head><body><h1>Buscaminas</h1><div class="g" id="g"></div>
+<script>
+const size=6, mines=6; let grid=[];
+function init(){ grid=Array(size*size).fill(0); // place mines
+ let m=0; while(m<mines){ let i=Math.floor(Math.random()*grid.length); if(grid[i]!==9){ grid[i]=9; m++; } }
+ for(let i=0;i<grid.length;i++) if(grid[i]!==9){ let r=Math.floor(i/size), c=i%size, cnt=0; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ let nr=r+dr, nc=c+dc; if(nr>=0&&nr<size&&nc>=0&&nc<size && grid[nr*size+nc]===9) cnt++; } grid[i]=cnt; }
+ render();
+}
+function render(){ const g=document.getElementById('g'); g.innerHTML=''; grid.forEach((v,i)=>{ const d=document.createElement('div'); d.className='cell'; d.dataset.i=i; d.onclick=()=>{ if(grid[i]===9){ d.style.background='red'; alert('Perdiste'); init(); } else { d.textContent = grid[i]||''; d.style.background='#eee'; } }; g.appendChild(d); }); }
+init();
+</script></body></html>

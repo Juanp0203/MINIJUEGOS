@@ -1,0 +1,23 @@
+<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Breakout</title>
+<style>body{text-align:center;font-family:Arial}canvas{display:block;margin:10px auto;background:#000}</style></head><body><h1>Breakout</h1><canvas id="c" width="360" height="300"></canvas>
+<script>
+const c=document.getElementById('c'),ctx=c.getContext('2d');
+let paddle={x:150,w:60}, ball={x:180,y:200,dx:2,dy:-2,r:6};
+let rows=3,cols=5,bricks=[];
+for(let r=0;r<rows;r++){bricks[r]=[]; for(let c2=0;c2<cols;c2++) bricks[r][c2]=1;}
+function draw(){ ctx.clearRect(0,0,360,300); ctx.fillStyle='#fff'; ctx.fillRect(paddle.x,280,paddle.w,8); ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2); ctx.fill();
+ // bricks
+ for(let r=0;r<rows;r++) for(let c2=0;c2<cols;c2++) if(bricks[r][c2]){ ctx.fillStyle='#d32f2f'; ctx.fillRect(10+c2*70,30+r*25,60,18); }
+ ball.x+=ball.dx; ball.y+=ball.dy;
+ if(ball.x<0||ball.x>360) ball.dx*=-1; if(ball.y<0) ball.dy*=-1; if(ball.y>280){ ball.x=180;ball.y=200; }
+ // paddle collision
+ if(ball.y>272 && ball.x>paddle.x && ball.x<paddle.x+paddle.w) ball.dy*=-1;
+ // bricks collision
+ for(let r=0;r<rows;r++) for(let c2=0;c2<cols;c2++) if(bricks[r][c2]){
+   let bx=10+c2*70, by=30+r*25, bw=60, bh=18;
+   if(ball.x>bx && ball.x<bx+bw && ball.y>by && ball.y<by+bh){ bricks[r][c2]=0; ball.dy*=-1; }
+ }
+}
+document.addEventListener('mousemove',e=>{ const rect=c.getBoundingClientRect(); paddle.x = e.clientX - rect.left - paddle.w/2; });
+setInterval(draw,16);
+</script></body></html>

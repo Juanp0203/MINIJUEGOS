@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Flappy</title>
+<style>body{text-align:center;font-family:Arial}canvas{display:block;margin:10px auto;background:#70c5ce}</style></head><body><h1>Flappy</h1><canvas id="c" width="320" height="480"></canvas>
+<script>
+const c=document.getElementById('c'),ctx=c.getContext('2d');
+let bird={x:80,y:240,vy:0}, pipes=[], tick=0;
+document.addEventListener('keydown',()=>bird.vy=-6); c.addEventListener('touchstart',()=>bird.vy=-6);
+function loop(){ tick++; bird.vy+=0.35; bird.y+=bird.vy; if(tick%90===0){ let h=80+Math.random()*200; pipes.push({x:320,y:h}); }
+ for(let i=pipes.length-1;i>=0;i--){ pipes[i].x-=2; if(bird.x>pipes[i].x && bird.x<pipes[i].x+40 && (bird.y<pipes[i].y-80 || bird.y>pipes[i].y+80)) { reset(); } if(pipes[i].x<-40) pipes.splice(i,1); }
+ if(bird.y>480||bird.y<0) reset();
+ draw();
+}
+function draw(){ ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle='yellow'; ctx.fillRect(bird.x,bird.y,20,20); ctx.fillStyle='green'; pipes.forEach(p=>{ ctx.fillRect(p.x,0,40,p.y-80); ctx.fillRect(p.x,p.y+80,40,480); }); }
+function reset(){ bird={x:80,y:240,vy:0}; pipes=[]; tick=0; }
+setInterval(loop,20);
+</script></body></html>

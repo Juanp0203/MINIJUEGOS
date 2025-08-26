@@ -1,0 +1,9 @@
+<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Simon</title>
+<style>body{text-align:center;font-family:Arial}.box{display:grid;grid-template-columns:repeat(2,120px);gap:6px;width:250px;margin:10px auto}.b{height:120px;border-radius:8px}</style></head><body><h1>Simon</h1><div class="box"><div id="0" class="b" style="background:#4caf50"></div><div id="1" class="b" style="background:#ffeb3b"></div><div id="2" class="b" style="background:#f44336"></div><div id="3" class="b" style="background:#2196f3"></div></div>
+<script>
+let seq=[], player=[], colors=document.querySelectorAll('.b');
+function next(){ seq.push(Math.floor(Math.random()*4)); playSeq(); }
+function playSeq(){ let i=0; const iv=setInterval(()=>{ colors[seq[i]].style.opacity=0.5; setTimeout(()=>colors[seq[i]].style.opacity=1,300); i++; if(i>=seq.length) clearInterval(iv); },600); player=[]; }
+colors.forEach((c,i)=>c.onclick=()=>{ player.push(i); if(player[player.length-1]!==seq[player.length-1]){ alert('Fallaste'); seq=[]; setTimeout(next,500); } else if(player.length===seq.length){ setTimeout(next,500); } });
+next();
+</script></body></html>

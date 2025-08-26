@@ -1,0 +1,9 @@
+<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Ahorcado</title>
+<style>body{text-align:center;font-family:Arial}.word{letter-spacing:8px;font-size:28px}</style></head><body><h1>Ahorcado</h1><div class="word" id="w"></div><div id="letters"></div><button onclick="start()">Reiniciar</button>
+<script>
+const words=['JUEGO','TAXMETA','CARRO','VIAJE','BUS']; let word,revealed,wrong;
+function start(){ word=words[Math.floor(Math.random()*words.length)]; revealed=Array(word.length).fill('_'); wrong=0; document.getElementById('letters').innerHTML=''; for(let i=65;i<91;i++){ const b=document.createElement('button'); b.textContent=String.fromCharCode(i); b.onclick=()=>guess(b.textContent,b); document.getElementById('letters').appendChild(b);} draw(); }
+function guess(l,btn){ btn.disabled=true; if(word.includes(l)){ for(let i=0;i<word.length;i++) if(word[i]===l) revealed[i]=l; } else { wrong++; } draw(); if(!revealed.includes('_')) alert('Ganaste'); if(wrong>6) alert('Perdiste'); }
+function draw(){ document.getElementById('w').textContent = revealed.join(' '); }
+start();
+</script></body></html>
